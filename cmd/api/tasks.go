@@ -95,6 +95,16 @@ func (app* application) updateTask (c *gin.Context) {
 	c.JSON(http.StatusOK, updatedTask)
 }
 
-func (app *application) deleteEvent(c *gin.Context) {
+func (app *application) deleteTask(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid task ID"})
+	}
+
+	if err := app.models.Tasks.Delete(id); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete task"})
+		return
+	}
+
+	c.JSON(http.StatusNoContent, nil)
 }
