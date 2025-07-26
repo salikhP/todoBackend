@@ -18,7 +18,7 @@ func (app *application) createTask(c *gin.Context) {
 	err := app.models.Tasks.Insert(&task)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create task"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 

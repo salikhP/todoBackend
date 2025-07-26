@@ -29,8 +29,8 @@ func (app *application) registerUser(c *gin.Context) {
 	register.Password = string(hashedPassword)
 	user := database.User{
 		Email:    register.Email,
-		Password: register.Password,
 		Name:     register.Name,
+		Password: register.Password,
 	}
 
 	err = app.models.Users.Insert(&user)
