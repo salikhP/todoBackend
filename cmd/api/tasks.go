@@ -15,10 +15,10 @@ func (app *application) createTask(c *gin.Context) {
 		return
 	}
 
-	err := app.models.Tasks.insert(&task)
+	err := app.models.Tasks.Insert(&task)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H({"error": "Failed to create task"}))
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create task"})
 		return
 	}
 
@@ -30,6 +30,7 @@ func (app *application) getAllTasks(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch all tasks"})
+		return
 	}
 
 	c.JSON(http.StatusOK, tasks)
@@ -58,7 +59,7 @@ func (app *application) getTask(c *gin.Context) {
 	c.JSON(http.StatusOK, task)
 }
 
-func (app* application) updateTask (c *gin.Context) {
+func (app *application) updateTask(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 
 	if err != nil {
@@ -78,7 +79,7 @@ func (app* application) updateTask (c *gin.Context) {
 		return
 	}
 
-	updatedTask = &database.Task{}
+	updatedTask := &database.Task{}
 
 	if err := c.ShouldBindJSON(updatedTask); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
