@@ -14,7 +14,7 @@ func (app *application) routes() http.Handler {
 		v1.GET("/tasks", app.getAllTasks)
 		v1.GET("/tasks/:id", app.getTask)
 		v1.PUT("/tasks/:id", app.updateTask)
-		v1.DELETE("events/:id", app.deleteTask)
+		v1.DELETE("tasks/:id", app.deleteTask)
 
 		v1.POST("/auth/register", app.registerUser)
 	}
