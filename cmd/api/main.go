@@ -3,7 +3,7 @@ package main
 import (
 	"database/sql"
 	_ "github.com/joho/godotenv/autoload"
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/lib/pq"
 	"log"
 	"todoApp/internal/database"
 	"todoApp/internal/env"
@@ -16,7 +16,8 @@ type application struct {
 }
 
 func main() {
-	db, err := sql.Open("sqlite3", "./data.db")
+	dsn := env.GetEnvString("POSTGRES_DSN", "")
+	db, err := sql.Open("postgres", dsn)
 
 	if err != nil {
 		log.Fatal(err)
