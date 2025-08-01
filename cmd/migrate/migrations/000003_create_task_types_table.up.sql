@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS task_types(
+     id SERIAL PRIMARY KEY,
+     name TEXT NOT NULL UNIQUE,
+     unit TEXT NOT NULL
+);

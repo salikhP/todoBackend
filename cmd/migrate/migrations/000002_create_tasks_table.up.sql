@@ -1,8 +1,10 @@
-create table if not exists tasks (
-    id integer primary key autoincrement,
-    user_id integer not null,
-    title text not null,
-    description text not null,
-    date datetime not null,
-    foreign key (user_id) references users (id) on delete cascade
+CREATE TABLE IF NOT EXISTS tasks (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    type_id INTEGER NOT NULL REFERENCES task_types(id),
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    date TIMESTAMP NOT NULL,
+    total_units INTEGER, -- e.g 310 pages, 120 minutes, 10 modules, 3 sub-tasks
+    progress_units INTEGER DEFAULT 0
 );
