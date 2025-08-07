@@ -11,20 +11,32 @@ type TaskModel struct {
 }
 
 type Task struct {
-	Id          int    `json:"id"`
-	UserId      int    `json:"userId" binding:"required"`
-	Title       string `json:"title" binding:"required,min=3"`
-	Description string `json:"description" binding:"required,min=10"`
-	Date        string `json:"date" binding:"required,datetime=2006-01-02"`
+	Id            int    `json:"id"`
+	UserId        int    `json:"userId" binding:"required"`
+	TypeId        int    `json:"typeId" binding:"required"`
+	Title         string `json:"title" binding:"required,min=3"`
+	Description   string `json:"description" binding:"required,min=10"`
+	Date          string `json:"date" binding:"required,datetime=2006-01-02"`
+	TotalUnits    int    `json:"totalUnits,omitempty"`
+	ProgressUnits int    `json:"progressUnits,omitempty"`
 }
 
 func (m TaskModel) Insert(task *Task) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	query := `INSERT INTO tasks (user_id, title, description, date) VALUES ($1, $2, $3, $4) RETURNING id`
+	query := `INSERT INTO tasks (user_id, type_id, title, description, date, total_units, progress_units) 
+			VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`
 
-	err := m.DB.QueryRowContext(ctx, query, task.UserId, task.Title, task.Description, task.Date).Scan(&task.Id)
+	err := m.DB.QueryRowContext(ctx, query,
+		task.UserId,
+		task.TypeId,
+		task.Title,
+		task.Description,
+		task.Date,
+		task.TotalUnits,
+		task.ProgressUnits,
+	).Scan(&task.Id)
 
 	if err != nil {
 		return err
@@ -49,7 +61,16 @@ func (m TaskModel) GetAll() ([]*Task, error) {
 
 	for rows.Next() {
 		var task Task
-		err := rows.Scan(&task.Id, &task.UserId, &task.Title, &task.Description, &task.Date)
+		err := rows.Scan(
+			&task.Id,
+			&task.UserId,
+			&task.TypeId,
+			&task.Title,
+			&task.Description,
+			&task.Date,
+			&task.TotalUnits,
+			&task.ProgressUnits,
+		)
 		if err != nil {
 			return nil, err
 		}
@@ -73,7 +94,16 @@ func (m TaskModel) Get(id int) (*Task, error) {
 
 	var task Task
 
-	err := row.Scan(&task.Id, &task.UserId, &task.Title, &task.Description, &task.Date)
+	err := row.Scan(
+		&task.Id,
+		&task.UserId,
+		&task.TypeId,
+		&task.Title,
+		&task.Description,
+		&task.Date,
+		&task.TotalUnits,
+		&task.ProgressUnits,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -85,9 +115,25 @@ func (m TaskModel) Update(task *Task) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	query := `UPDATE tasks SET title = $1, description = $2, date = $3 WHERE id = $4`
+	query := `UPDATE tasks SET
+                 type_id = $1,
+                 title = $2, 
+                 description = $3, 
+                 date = $4,
+                 total_units = $5,
+                 progress_units = $6
+             WHERE id = $7`
 
-	_, err := m.DB.ExecContext(ctx, query, task.Title, task.Description, task.Date, task.Id)
+	_, err := m.DB.ExecContext(ctx, query,
+		task.TypeId,
+		task.Title,
+		task.Description,
+		task.Date,
+		task.TotalUnits,
+		task.ProgressUnits,
+		task.Id,
+	)
+
 	if err != nil {
 		return err
 	}
