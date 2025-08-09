@@ -16,7 +16,7 @@ type Task struct {
 	TypeId        int    `json:"typeId" binding:"required"`
 	Title         string `json:"title" binding:"required,min=3"`
 	Description   string `json:"description" binding:"required,min=10"`
-	Date          string `json:"date" binding:"required,datetime=2006-01-02"`
+	Date          string `json:"date" binding:"required,datetime=2006-01-02 15:04:05"`
 	TotalUnits    int    `json:"totalUnits,omitempty"`
 	ProgressUnits int    `json:"progressUnits,omitempty"`
 }
