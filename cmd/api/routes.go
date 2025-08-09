@@ -16,6 +16,12 @@ func (app *application) routes() http.Handler {
 		v1.PUT("/tasks/:id", app.updateTask)
 		v1.DELETE("tasks/:id", app.deleteTask)
 
+		v1.POST("/taskTypes", app.createTaskType)
+		v1.GET("/taskTypes", app.getAllTaskTypes)
+		v1.GET("/taskTypes/:id", app.getTaskType)
+		v1.PUT("/taskTypes/:id", app.updateTaskType)
+		v1.DELETE("/taskTypes/:id", app.deleteTaskType)
+
 		v1.POST("/auth/register", app.registerUser)
 	}
 
