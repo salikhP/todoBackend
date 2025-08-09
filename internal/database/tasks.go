@@ -154,3 +154,41 @@ func (m TaskModel) Delete(id int) error {
 
 	return nil
 }
+
+func (m TaskModel) GetTasksByUserId(userId int) ([]*Task, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := `SELECT * FROM tasks WHERE user_id = $1`
+	rows, err := m.DB.QueryContext(ctx, query, userId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	tasks := []*Task{}
+
+	for rows.Next() {
+		var task Task
+		err := rows.Scan(
+			&task.Id,
+			&task.UserId,
+			&task.TypeId,
+			&task.Title,
+			&task.Description,
+			&task.Date,
+			&task.TotalUnits,
+			&task.ProgressUnits,
+		)
+		if err != nil {
+			return nil, err
+		}
+		tasks = append(tasks, &task)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return tasks, nil
+}
