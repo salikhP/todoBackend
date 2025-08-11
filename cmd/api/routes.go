@@ -25,6 +25,7 @@ func (app *application) routes() http.Handler {
 		v1.GET("/users/:userId/tasks", app.listTasks)
 
 		v1.POST("/auth/register", app.registerUser)
+		v1.POST("/auth/login", app.login)
 	}
 
 	return g
